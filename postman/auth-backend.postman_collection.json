@@ -1,0 +1,173 @@
+{
+  "info": {
+    "_postman_id": "8f0a3f18-3c9d-4a5a-9a8b-4c9b2a4e6d21",
+    "name": "Auth Backend - NestJS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Authentication API with register, login (cookie JWT), profile, and logout endpoints"
+  },
+  "item": [
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "register"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"Password123!\",\n  \"mobileNumber\": \"+11234567890\",\n  \"gender\": \"male\",\n  \"dateOfBirth\": \"1990-01-01\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Register a new user. All fields except fullName, email, and password are optional."
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 201 or 200', function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "pm.test('Has success message', function(){",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('message');",
+              "  pm.expect(json.message).to.include('successful');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth - Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "login"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"Password123!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": "Login with email and password. Returns JWT token in a cookie and user object in response."
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Login status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Set-Cookie contains auth cookie', function(){",
+              "  const setCookie = pm.response.headers.get('Set-Cookie');",
+              "  pm.expect(setCookie, 'Set-Cookie header present').to.be.a('string');",
+              "  pm.expect(setCookie).to.include(pm.collectionVariables.get('cookieName') || 'auth_token');",
+              "});",
+              "pm.test('Returns user object', function(){",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('user');",
+              "  pm.expect(json.user).to.have.property('email');",
+              "  pm.expect(json.user).to.have.property('fullName');",
+              "});",
+              "pm.test('Returns success message', function(){",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('message');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth - Profile",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/auth/profile",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "profile"]
+        },
+        "description": "Get authenticated user profile. Requires valid JWT token in cookie."
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Profile status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Profile has required fields', function(){",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('id');",
+              "  pm.expect(json).to.have.property('email');",
+              "  pm.expect(json).to.have.property('fullName');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth - Logout",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/auth/logout",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "logout"]
+        },
+        "description": "Logout and clear authentication cookie."
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Logout status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Logout success message', function(){",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('message');",
+              "  pm.expect(json.message).to.include('success');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "cookieName",
+      "value": "auth_token",
+      "type": "string"
+    }
+  ]
+}
