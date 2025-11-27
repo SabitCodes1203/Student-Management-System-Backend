@@ -1,0 +1,48 @@
+# Dependencies
+node_modules
+
+# Build outputs (dist is needed for api/index.ts imports)
+# dist - Keep this, it's needed for the serverless function
+build
+
+# Development files
+.vscode
+.idea
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Test files
+test
+coverage
+.nyc_output
+
+# Environment files (should be set in Vercel dashboard)
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Documentation (optional - can be included)
+# README.md
+# *.md
+
+# Postman collections (optional)
+postman
+
+# Temporary files
+.temp
+.tmp
+*.tsbuildinfo
+
+# Generated Prisma files (will be regenerated)
+generated/prisma
+
