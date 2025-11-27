@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../dist/src/app.module';
+import { AppModule } from '../src/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
-import { HttpExceptionFilter } from '../dist/src/common/filters/http-exception.filter';
+import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter';
 import type { Request, Response } from 'express';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import express from 'express';
